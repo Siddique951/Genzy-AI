@@ -4,7 +4,7 @@ import { clerkClient } from "@clerk/express";
 import axios from "axios";
 import { v2 as cloudinary } from 'cloudinary';
 import fs from "fs";
-import { PDFParse } from "pdf-parse";
+import pdf from 'pdf-parse/lib/pdf-parse.js';
 
 // AI instance
 const AI = new OpenAI({
@@ -288,10 +288,7 @@ export const resumeReview = async (req, res) => {
 
         const buffer = fs.readFileSync(resume.path);
 
-        const parser = new PDFParse({ data: buffer });
-        const pdfResult = await parser.getText();
-
-        const pdfText = pdfResult.text;
+        const { text: pdfText } = await pdf(buffer);
 
         const prompt = `
 You are an expert ATS Resume Analyzer.
